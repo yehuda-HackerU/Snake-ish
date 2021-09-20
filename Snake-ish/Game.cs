@@ -19,9 +19,8 @@ namespace Snake_ish
 
             Console.Title = "Snake-ish";
             InitializeBoard();
-            board.Draw();
 
-            InitializePlayerPosition();
+            player.InitializePlayerPosition(board);
             player.Draw();
 
             Run();
@@ -31,45 +30,48 @@ namespace Snake_ish
         {
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
             ConsoleKey key = keyInfo.Key;
+            (int x, int y) position = player.PlayerPosition;
 
             switch (key)
             {
                 case ConsoleKey.UpArrow:
                 case ConsoleKey.W:
-                    if (!board.ValidPosition((player.X, player.Y - 1)))
+                    if (!board.ValidPosition((position.x, position.y - 1)))
                     {
                         throw new PositionException();
                     }
-                    player.Y -= 1;
+                    position.y -= 1;
                     break;
                 case ConsoleKey.DownArrow:
                 case ConsoleKey.S:
-                    if (!board.ValidPosition((player.X, player.Y + 1)))
+                    if (!board.ValidPosition((position.x, position.y + 1)))
                     {
                         throw new PositionException();
                     }
-                    player.Y += 1;
+                    position.y += 1;
                     break;
                 case ConsoleKey.LeftArrow:
                 case ConsoleKey.A:
-                    if (!board.ValidPosition((player.X - 1, player.Y)))
+                    if (!board.ValidPosition((position.x - 1, position.y)))
                     {
                         throw new PositionException();
                     }
-                    player.X -= 1;
+                    position.x -= 1;
                     break;
                 case ConsoleKey.RightArrow:
                 case ConsoleKey.D:
-                    if (!board.ValidPosition((player.X + 1, player.Y)))
+                    if (!board.ValidPosition((position.x + 1, position.y)))
                     {
                         throw new PositionException();
                     }
-                    player.X += 1;
+                    position.x += 1;
                     break;
                 default:
                     break;
             }
+            player.PlayerPosition = position;
             player.Score++;
+            board.AddInvalidPosition(player.PlayerPosition.x, player.PlayerPosition.y);
             player.Move();
         }
 
@@ -96,21 +98,6 @@ namespace Snake_ish
                         break;
                 }
             }
-        }
-
-        private void InitializePlayerPosition()
-        {
-            Random rnd = new Random();
-            (int x, int y) position;
-
-            do
-            {
-                position = (rnd.Next(Console.WindowWidth), rnd.Next(Console.WindowHeight));
-            } while (!board.ValidPosition(position));
-
-
-            player.X = position.x;
-            player.Y = position.y;
         }
 
         private void Run()

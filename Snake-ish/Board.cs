@@ -8,20 +8,7 @@ namespace Snake_ish
 {
     class Board
     {
-        public char[,] GameBoard;
         private List<(int, int)> InvalidPositions = new List<(int, int)>();
-
-        public Board()
-        {
-            GameBoard = new char[Console.WindowHeight, Console.WindowWidth];
-            for (int y = 0; y < GameBoard.GetLength(0); y++)
-            {
-                for (int x = 0; x < GameBoard.GetLength(1); x++)
-                {
-                    GameBoard[y, x] = ' ';
-                }
-            }
-        }
 
         public bool ValidPosition((int x, int y) position)
         {
@@ -42,18 +29,6 @@ namespace Snake_ish
         public void AddInvalidPosition(List<(int, int)> positions)
         {
             InvalidPositions.AddRange(positions);
-        }
-
-        public void Draw()
-        {
-            for (int y = 0; y < GameBoard.GetLength(0); y++)
-            {
-                for (int x = 0; x < GameBoard.GetLength(1); x++)
-                {
-                    Console.Write(GameBoard[y, x]);
-                }
-                Console.WriteLine();
-            }
         }
     }
 }

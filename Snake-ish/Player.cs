@@ -8,64 +8,82 @@ namespace Snake_ish
 {
     class Player
     {
-        private int prevX;
-        private int _x;
-        public int X
+        //private int prevX;
+        //private int _x;
+        //public int X
+        //{
+        //    get
+        //    {
+        //        return _x;
+        //    }
+        //    set
+        //    {
+
+        //        prevX = _x;
+        //        _x = value;
+        //    }
+        //}
+
+        //private int prevY;
+        //private int _y;
+        //public int Y
+        //{
+        //    get
+        //    {
+        //        return _y;
+        //    }
+        //    set
+        //    {
+        //        prevY = _y;
+        //        _y = value;
+        //    }
+        //}
+
+        private (int x, int y) prevPlayerPosition;
+        private (int x, int y) _playerPosition;
+        public (int x, int y) PlayerPosition
         {
-            get
-            {
-                return _x;
-            }
+            get { return _playerPosition; }
             set
             {
-
-                prevX = _x;
-                _x = value;
+                prevPlayerPosition = _playerPosition;
+                _playerPosition = value;
             }
         }
+        public int Score { get; set; }
 
-        private int prevY;
-        private int _y;
-        public int Y
+        public void InitializePlayerPosition(Board board)
         {
-            get
+            Random rnd = new Random();
+            (int x, int y) position;
+
+            do
             {
-                return _y;
-            }
-            set
-            {
-                prevY = _y;
-                _y = value;
-            }
+                position = (rnd.Next(Console.WindowWidth), rnd.Next(Console.WindowHeight));
+            } while (!board.ValidPosition(position));
+
+            board.AddInvalidPosition(position.x, position.y);
+            prevPlayerPosition = position;
+            _playerPosition = position;
         }
-        public int Score {get; set;}
 
         public void Draw()
         {
             Console.ForegroundColor = ConsoleColor.White;
-            Console.SetCursorPosition(_x, _y);
-            Console.CursorVisible = false;
+            Console.SetCursorPosition(PlayerPosition.x, PlayerPosition.y);
             Console.Write('*');
+            Console.CursorVisible = false;
         }
 
         public void Move()
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            if (_x != prevX)
-            {
-                Console.SetCursorPosition(prevX, _y);
-                Console.CursorVisible = false;
-            }
-            else if (_y != prevY)
-            {
-                Console.SetCursorPosition(_x, prevY);
-                Console.CursorVisible = false;
-            }
+            Console.SetCursorPosition(prevPlayerPosition.x, prevPlayerPosition.y);
             Console.Write('*');
             Console.ForegroundColor = ConsoleColor.White;
-            Console.SetCursorPosition(X, Y);
+            Console.SetCursorPosition(PlayerPosition.x, PlayerPosition.y);
             Console.Write('*');
-
+            Console.CursorVisible = false;
         }
 
 
