@@ -17,6 +17,7 @@ namespace Snake_ish
             player = new Player();
             board = new Board();
 
+            Console.Title = "Snake-ish";
             InitializeBoard();
             board.Draw();
 
@@ -82,16 +83,16 @@ namespace Snake_ish
                 switch (shapeChoise)
                 {
                     case 0:
-                        new Line(board);
+                        new Line(board).Draw();
                         break;
                     case 1:
-                        new Square(board);
+                        new Square(board).Draw();
                         break;
                     case 2:
-                        new Rectangele(board);
+                        new Rectangele(board).Draw();
                         break;
                     case 3:
-                        new Triangle(board);
+                        new Triangle(board).Draw();
                         break;
                 }
             }

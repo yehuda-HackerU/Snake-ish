@@ -9,6 +9,9 @@ namespace Snake_ish
     class Shape
     {
         protected Board board;
+        protected char shapeChar;
+        protected ConsoleColor color;
+        protected List<(int, int)> positions;
 
         public Shape(Board board)
         {
@@ -25,6 +28,18 @@ namespace Snake_ish
             }
             return true;
         }
+
+        public void Draw()
+        {
+            Console.ForegroundColor = color;
+            Console.CursorVisible = false;
+            foreach ((int x, int y) position in positions)
+            {
+                Console.SetCursorPosition(position.x, position.y);
+                Console.Write(shapeChar);
+            }
+            Console.ResetColor();
+        }
     }
 
 
@@ -32,9 +47,13 @@ namespace Snake_ish
     {
         public Line(Board board) : base(board)
         {
-            Create();
+            shapeChar = '=';
+            color = ConsoleColor.Cyan;
+            positions = GeneratePositions();
+            board.AddInvalidPosition(positions);
         }
-        public void Create()
+
+        private List<(int, int)> GeneratePositions()
         {
             Random rnd = new Random();
             int length = rnd.Next(5, 12);
@@ -50,11 +69,7 @@ namespace Snake_ish
                 }
             } while (!ValidShapePositions(positions));
 
-            board.AddInvalidPosition(positions);
-            foreach ((int x, int y) position in positions)
-            {
-                board.GameBoard[position.y, position.x] = '=';
-            }
+            return positions;
         }
     }
 
@@ -63,9 +78,13 @@ namespace Snake_ish
     {
         public Square(Board board) : base(board)
         {
-            Create();
+            shapeChar = '█';
+            color = ConsoleColor.Magenta;
+            positions = GeneratePositions();
+            board.AddInvalidPosition(positions);
         }
-        public void Create()
+
+        private List<(int, int)> GeneratePositions()
         {
             Random rnd = new Random();
             int length = rnd.Next(3, 10);
@@ -73,7 +92,7 @@ namespace Snake_ish
 
             do
             {
-                (int x, int y) startPoint = (rnd.Next(Console.WindowWidth - length), rnd.Next(Console.WindowHeight -length / 2));
+                (int x, int y) startPoint = (rnd.Next(Console.WindowWidth - length), rnd.Next(Console.WindowHeight - length / 2));
                 positions = new List<(int, int)>();
                 for (int i = 0; i < length; i++)
                 {
@@ -84,11 +103,7 @@ namespace Snake_ish
                 }
             } while (!ValidShapePositions(positions));
 
-            board.AddInvalidPosition(positions);
-            foreach ((int x, int y) position in positions)
-            {
-                board.GameBoard[position.y, position.x] = '█';
-            }
+            return positions;
         }
     }
 
@@ -97,9 +112,12 @@ namespace Snake_ish
     {
         public Rectangele(Board board) : base(board)
         {
-            Create();
+            shapeChar = '▒';
+            color = ConsoleColor.Blue;
+            positions = GeneratePositions();
+            board.AddInvalidPosition(positions);
         }
-        public void Create()
+        private List<(int, int)> GeneratePositions()
         {
             Random rnd = new Random();
             int length = rnd.Next(3, 10);
@@ -118,11 +136,7 @@ namespace Snake_ish
                 }
             } while (!ValidShapePositions(positions));
 
-            board.AddInvalidPosition(positions);
-            foreach ((int x, int y) position in positions)
-            {
-                board.GameBoard[position.y, position.x] = '▒';
-            }
+            return positions;
         }
     }
 
@@ -131,10 +145,15 @@ namespace Snake_ish
     {
         public Triangle(Board board) : base(board)
         {
-            Create();
+            shapeChar = '^';
+            color = ConsoleColor.Yellow;
+            positions = GeneratePositions();
+            board.AddInvalidPosition(positions);
         }
-        public void Create()
+
+        private List<(int, int)> GeneratePositions()
         {
+
             Random rnd = new Random();
             int length = rnd.Next(3, 9);
             List<(int x, int y)> positions;
@@ -143,7 +162,7 @@ namespace Snake_ish
             {
                 (int x, int y) startPoint = (rnd.Next(0, Console.WindowWidth - length), rnd.Next(length, Console.WindowHeight - length));
                 positions = new List<(int, int)>();
-                for (int i = 1; i < length; i++)
+                for (int i = 1; i <= length; i++)
                 {
                     for (int j = 0; j < i; j++)
                     {
@@ -153,11 +172,7 @@ namespace Snake_ish
                 }
             } while (!ValidShapePositions(positions));
 
-            board.AddInvalidPosition(positions);
-            foreach ((int x, int y) position in positions)
-            {
-                board.GameBoard[position.y, position.x] = '^';
-            }
+            return positions;
         }
     }
 }
