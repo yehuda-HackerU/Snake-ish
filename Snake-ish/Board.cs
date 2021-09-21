@@ -6,11 +6,42 @@ using System.Threading.Tasks;
 
 namespace Snake_ish
 {
-    class Board
+    static class Board
     {
-        private List<(int, int)> InvalidPositions = new List<(int, int)>();
+        private static List<(int, int)> InvalidPositions = new List<(int, int)>();
+        private static List<(int, int)> BoardFrame = CreateBoardFrame();
 
-        public bool ValidPosition((int x, int y) position)
+        static private List<(int, int)> CreateBoardFrame()
+        {
+            List<(int, int)> frame = new List<(int, int)>();
+
+            for (int x = 0; x < Console.WindowWidth ; x++)
+            {
+                frame.Add((x, 0));
+                frame.Add((x, Console.WindowHeight - 1));
+            }
+            for (int y = 0; y < Console.WindowHeight; y++)
+            {
+                frame.Add((0, y));
+                frame.Add((Console.WindowWidth - 1, y));
+            }
+
+            AddInvalidPosition(frame);
+            return frame;
+        }
+
+        static public void DrawFrame()
+        {
+            foreach ((int x, int y) position in BoardFrame)
+            {
+                Console.SetCursorPosition(position.x, position.y);
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                Console.Write('#');
+            }
+            Console.ResetColor();
+        }
+
+        static public bool ValidPosition((int x, int y) position)
         {
             int x = position.x;
             int y = position.y;
@@ -21,14 +52,20 @@ namespace Snake_ish
             return !InvalidPositions.Contains(position);
         }
 
-        public void AddInvalidPosition(int x, int y)
+        public static void AddInvalidPosition((int, int) position)
         {
-            InvalidPositions.Add((x, y));
+            InvalidPositions.Add(position);
         }
 
-        public void AddInvalidPosition(List<(int, int)> positions)
+        public static void AddInvalidPosition(List<(int, int)> positions)
         {
             InvalidPositions.AddRange(positions);
+        }
+
+        public static void ResetInvalidPositions()
+        {
+            InvalidPositions.Clear();
+            InvalidPositions.AddRange(BoardFrame);
         }
     }
 }

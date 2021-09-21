@@ -6,42 +6,12 @@ using System.Threading.Tasks;
 
 namespace Snake_ish
 {
-    class Player
+    static class Player
     {
-        //private int prevX;
-        //private int _x;
-        //public int X
-        //{
-        //    get
-        //    {
-        //        return _x;
-        //    }
-        //    set
-        //    {
 
-        //        prevX = _x;
-        //        _x = value;
-        //    }
-        //}
-
-        //private int prevY;
-        //private int _y;
-        //public int Y
-        //{
-        //    get
-        //    {
-        //        return _y;
-        //    }
-        //    set
-        //    {
-        //        prevY = _y;
-        //        _y = value;
-        //    }
-        //}
-
-        private (int x, int y) prevPlayerPosition;
-        private (int x, int y) _playerPosition;
-        public (int x, int y) PlayerPosition
+        private static (int x, int y) prevPlayerPosition;
+        private static (int x, int y) _playerPosition;
+        public static (int x, int y) PlayerPosition
         {
             get { return _playerPosition; }
             set
@@ -50,9 +20,8 @@ namespace Snake_ish
                 _playerPosition = value;
             }
         }
-        public int Score { get; set; }
 
-        public void InitializePlayerPosition(Board board)
+        public static void SetFirstPlayerPosition()
         {
             Random rnd = new Random();
             (int x, int y) position;
@@ -60,14 +29,34 @@ namespace Snake_ish
             do
             {
                 position = (rnd.Next(Console.WindowWidth), rnd.Next(Console.WindowHeight));
-            } while (!board.ValidPosition(position));
+            } while (!Board.ValidPosition(position));
 
-            board.AddInvalidPosition(position.x, position.y);
+            Board.AddInvalidPosition(position);
             prevPlayerPosition = position;
             _playerPosition = position;
         }
 
-        public void Draw()
+        public static void SetPlayerPosition()
+        {
+            Random rnd = new Random();
+            (int x, int y) position;
+            int tryes = 0;
+
+            do
+            {
+                position = (rnd.Next(Console.WindowWidth), rnd.Next(Console.WindowHeight));
+                tryes++;
+                if (tryes >= 30)
+                {
+                    throw new StartPointException();
+                }
+            } while (!Board.ValidPosition(position));
+
+            Board.AddInvalidPosition(position);
+            PlayerPosition = position;
+        }
+
+        public static void Draw()
         {
             Console.ForegroundColor = ConsoleColor.White;
             Console.SetCursorPosition(PlayerPosition.x, PlayerPosition.y);
@@ -75,7 +64,7 @@ namespace Snake_ish
             Console.CursorVisible = false;
         }
 
-        public void Move()
+        public static void Move()
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.SetCursorPosition(prevPlayerPosition.x, prevPlayerPosition.y);

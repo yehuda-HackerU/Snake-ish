@@ -8,20 +8,19 @@ namespace Snake_ish
 {
     class Shape
     {
-        protected Board board;
         protected char shapeChar;
         protected ConsoleColor color;
         protected List<(int, int)> positions;
 
-        public Shape(Board board)
+        public Shape()
         {
-            this.board = board;
+            
         }
         protected bool ValidShapePositions(List<(int, int)> positions)
         {
             foreach ((int, int) position in positions)
             {
-                if (!board.ValidPosition(position))
+                if (!Board.ValidPosition(position))
                 {
                     return false;
                 }
@@ -45,12 +44,12 @@ namespace Snake_ish
 
     class Line : Shape
     {
-        public Line(Board board) : base(board)
+        public Line() 
         {
             shapeChar = '=';
-            color = ConsoleColor.Cyan;
+            color = ConsoleColor.Red;
             positions = GeneratePositions();
-            board.AddInvalidPosition(positions);
+            Board.AddInvalidPosition(positions);
         }
 
         private List<(int, int)> GeneratePositions()
@@ -76,18 +75,18 @@ namespace Snake_ish
 
     class Square : Shape
     {
-        public Square(Board board) : base(board)
+        public Square() 
         {
             shapeChar = '█';
             color = ConsoleColor.Magenta;
             positions = GeneratePositions();
-            board.AddInvalidPosition(positions);
+            Board.AddInvalidPosition(positions);
         }
 
         private List<(int, int)> GeneratePositions()
         {
             Random rnd = new Random();
-            int length = rnd.Next(3, 10);
+            int length = rnd.Next(3, 12);
             List<(int x, int y)> positions;
 
             do
@@ -110,12 +109,12 @@ namespace Snake_ish
 
     class Rectangele : Shape
     {
-        public Rectangele(Board board) : base(board)
+        public Rectangele() 
         {
             shapeChar = '▒';
             color = ConsoleColor.Blue;
             positions = GeneratePositions();
-            board.AddInvalidPosition(positions);
+            Board.AddInvalidPosition(positions);
         }
         private List<(int, int)> GeneratePositions()
         {
@@ -143,12 +142,12 @@ namespace Snake_ish
 
     class Triangle : Shape
     {
-        public Triangle(Board board) : base(board)
+        public Triangle() 
         {
             shapeChar = '^';
             color = ConsoleColor.Yellow;
             positions = GeneratePositions();
-            board.AddInvalidPosition(positions);
+            Board.AddInvalidPosition(positions);
         }
 
         private List<(int, int)> GeneratePositions()

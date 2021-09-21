@@ -8,35 +8,52 @@ namespace Snake_ish
 {
     class Game
     {
-        private Board board;
-        private Player player;
+        public int Score { get; set; }
+        private int shapesCount = new Random().Next(3, 7);
 
         public void StartGame()
         {
-            //random start point, if after 30 times can't start trow exc.
-            player = new Player();
-            board = new Board();
-
             Console.Title = "Snake-ish";
-            InitializeBoard();
+            Console.Clear();
 
-            player.InitializePlayerPosition(board);
-            player.Draw();
+            Player.SetFirstPlayerPosition();
 
-            Run();
+            while (shapesCount < 15)
+            {
+                Board.DrawFrame();
+                Player.Draw();
+                SetBoard();
+
+                try
+                {
+                    Run();
+                }
+                catch (EndGameException)
+                {
+                    break;
+                }
+                shapesCount++;
+                Console.Clear();
+                Board.ResetInvalidPositions();
+                if (shapesCount < 15)
+                {
+                    NextLevel();
+                }
+                Player.SetPlayerPosition();
+            }
         }
 
         public void PlayerInput()
         {
             ConsoleKeyInfo keyInfo = Console.ReadKey(true);
             ConsoleKey key = keyInfo.Key;
-            (int x, int y) position = player.PlayerPosition;
+            (int x, int y) position = Player.PlayerPosition;
 
             switch (key)
             {
                 case ConsoleKey.UpArrow:
                 case ConsoleKey.W:
-                    if (!board.ValidPosition((position.x, position.y - 1)))
+                    if (!Board.ValidPosition((position.x, position.y - 1)))
                     {
                         throw new PositionException();
                     }
@@ -44,7 +61,7 @@ namespace Snake_ish
                     break;
                 case ConsoleKey.DownArrow:
                 case ConsoleKey.S:
-                    if (!board.ValidPosition((position.x, position.y + 1)))
+                    if (!Board.ValidPosition((position.x, position.y + 1)))
                     {
                         throw new PositionException();
                     }
@@ -52,7 +69,7 @@ namespace Snake_ish
                     break;
                 case ConsoleKey.LeftArrow:
                 case ConsoleKey.A:
-                    if (!board.ValidPosition((position.x - 1, position.y)))
+                    if (!Board.ValidPosition((position.x - 1, position.y)))
                     {
                         throw new PositionException();
                     }
@@ -60,41 +77,43 @@ namespace Snake_ish
                     break;
                 case ConsoleKey.RightArrow:
                 case ConsoleKey.D:
-                    if (!board.ValidPosition((position.x + 1, position.y)))
+                    if (!Board.ValidPosition((position.x + 1, position.y)))
                     {
                         throw new PositionException();
                     }
                     position.x += 1;
                     break;
+                case ConsoleKey.Q:
+                    throw new EndGameException();
                 default:
                     break;
             }
-            player.PlayerPosition = position;
-            player.Score++;
-            board.AddInvalidPosition(player.PlayerPosition.x, player.PlayerPosition.y);
-            player.Move();
+            Player.PlayerPosition = position;
+            Score++;
+            Board.AddInvalidPosition(Player.PlayerPosition);
+            Player.Move();
         }
 
-        private void InitializeBoard()
+        private void SetBoard()
         {
             Random rnd = new Random();
-            int shapesCount = rnd.Next(3, 7);
+
             for (int i = 0; i < shapesCount; i++)
             {
                 int shapeChoise = rnd.Next(4);
                 switch (shapeChoise)
                 {
                     case 0:
-                        new Line(board).Draw();
+                        new Line().Draw();
                         break;
                     case 1:
-                        new Square(board).Draw();
+                        new Square().Draw();
                         break;
                     case 2:
-                        new Rectangele(board).Draw();
+                        new Rectangele().Draw();
                         break;
                     case 3:
-                        new Triangle(board).Draw();
+                        new Triangle().Draw();
                         break;
                 }
             }
@@ -110,12 +129,24 @@ namespace Snake_ish
                 }
                 catch (PositionException)
                 {
-                    //fail += 1
                     break;
                 }
 
                 System.Threading.Thread.Sleep(0);
             }
+        }
+
+        private void NextLevel()
+        {
+            Console.WriteLine("\n\n\n\n");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n\nYour score is: {Score}!");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n\nYou have {15 - shapesCount} more levels!");
+            Console.ResetColor();
+            Console.WriteLine("\nPress any key to continue...");
+            Console.ReadKey(true);
+            Console.Clear();
         }
     }
 }

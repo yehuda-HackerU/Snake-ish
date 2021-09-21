@@ -17,4 +17,27 @@ namespace Snake_ish
         {
         }
     }
+
+
+    public class StartPointException : ApplicationException
+    {
+        public StartPointException()
+        {
+        }
+
+        public StartPointException(string message) : base(message)
+        {
+        }
+    }
+
+    public class EndGameException : ApplicationException
+    {
+        public EndGameException()
+        {
+        }
+
+        public EndGameException(string message) : base(message)
+        {
+        }
+    }
 }
